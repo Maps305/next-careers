@@ -1,0 +1,46 @@
+function SkillsInput() {
+  const [skills, setSkills] = useState([]);
+  const inputRef = useRef(null);
+
+  const handleInputChange = (event) => {
+    const newSkill = event.target.value.trim();
+    if (newSkill) {
+      // Update state only on Enter or blur when inputRef loses focus
+      if (event.key === 'Enter' || !inputRef.current.contains(document.activeElement)) {
+        setSkills([...skills, newSkill]);
+        event.target.value = ''; // Clear input field after adding skill
+      }
+    }
+  };
+
+  const handleRemoveSkill = (skill) => {
+    const updatedSkills = skills.filter((s) => s !== skill);
+    setSkills(updatedSkills);
+  };
+
+  const renderSkills = () => {
+    return skills.map((skill, index) => (
+      <div key={index} className="skill-chip">
+        {skill}
+        <button onClick={() => handleRemoveSkill(skill)}>-</button>
+      </div>
+    ));
+  };
+
+  return (
+    <div className="">
+      <input
+        type="text"
+        placeholder="type here..."
+        ref={inputRef}
+        onChange={handleInputChange}
+        onKeyDown={handleInputChange}
+        onBlur={handleInputChange} // Capture Enter on mobile blur
+      />
+      <div className="bg-slate-200 text-left">{renderSkills()}</div>
+    </div>
+  );
+
+}
+
+export default SkillsInput;

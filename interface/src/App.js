@@ -27,7 +27,7 @@ function SkillsInput(currentQuestion) {
     return skills.map((skill, index) => (
       <div key={index} className="skill-chip">
         {skill}
-        <button onClick={() => handleRemoveSkill(skill)}>. -x</button>
+        <button className='bg-red-300 rounded-md m-1 py-1 px-2' onClick={() => handleRemoveSkill(skill)}>-</button>
       </div>
     ));
   };
@@ -38,7 +38,7 @@ function SkillsInput(currentQuestion) {
 
 
   return (
-    <div className="">
+    <div className="m-2">
       <input
         type="text"
         placeholder="type here..."
@@ -46,8 +46,9 @@ function SkillsInput(currentQuestion) {
         onChange={handleInputChange}
         onKeyDown={handleInputChange}
         onBlur={handleInputChange} // Capture Enter on mobile blur
+        className="p-2 text-sm"
       />
-      <div className="bg-slate-200 mt-3 text-sm">{renderSkills()}</div>
+      <div className="bg-slate-200 mt-3 text-sm text-left">{renderSkills()}</div>
       <button onClick={handleClearSkills}></button>
     </div>
   );
@@ -111,6 +112,10 @@ const App = () => {
     }
   }
 
+  const tryAgain = () => {
+    setCurrentQuestion(0);
+  }
+
   return (
     <div className="flex w-full h-screen justify-center items-center bg-gradient-to-r from-violet-500 to-fuchsia-500">
       <div className='bg-slate-100 p-12 rounded-lg shadow-2xl w-full max-w-xl text-center'>
@@ -128,13 +133,13 @@ const App = () => {
                 Do you want to take the career quiz again?
               </div>
               <br></br>
-              <button className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500'>try again</button>
+              <button onClick={() => tryAgain()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500'>try again</button>
             </>
           ) : (
             <>
               <div className='text-slate-700 font-semibold'>
                 <div className='m-4'>
-                  <span className='text-lg'>Currently at: {currentQuestion + 1}</span>/{allQuestions.length}
+                  <span className='text-lg'>Please respond truthfully...</span>
                 </div>
 
                 <hr></hr>
@@ -155,8 +160,14 @@ const App = () => {
                   ) : (
                     <div className='w-full'>
                       <SkillsInput />
-                      <button onClick={() => handleNext()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500 ease-in-out'>next</button>
-                      {console.log(skills_array)}
+                      {
+                        currentQuestion < allQuestions.length - 1 ? 
+                        <button onClick={() => handleNext()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500 ease-in-out'>next</button> 
+                        : 
+                        <button className='m-2 p-2 rounded-lg bg-green-500 hover:shadow-xl hover:bg-green-300 transition-all duration-500 ease-in-out'>show recommendation</button>
+                      }
+
+                      {/* {console.log(skills_array)} */}
                     </div>
                   )
                 }

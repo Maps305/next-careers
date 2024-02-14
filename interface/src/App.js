@@ -55,28 +55,28 @@ function SkillsInput(currentQuestion) {
   );
 
 }
-const handleRecommendations = async () => {
-  // ... other button logic
-  if (skills.length > 0) {
-    const skillsString = skills.join(',');
-    try {
-      const response = await axios.post(
-        'http://localhost:3000/recommendations',
-        { skills: skillsString }
-      );
-      setRecommendations(response.data);
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-      // Handle potential errors gracefully
-    }
-  }
-};
 const App = () => {
   // const interests = new Array();
   const [recommendations, setRecommendations] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   // toggle show recommendations
   const [showRecommendation, setShowRecommendation] = useState(false);
+  const handleRecommendations = async () => {
+    // ... other button logic
+    if (skills_array.length > 0) {
+      const skillsString = skills_array.join(',');
+      try {
+        const response = await axios.post(
+          'http://127.0.0.1:5000/recommendations',
+          { skills: skillsString }
+        );
+        setRecommendations(response.data);
+      } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        // Handle potential errors gracefully
+      }
+    }
+  };
 
   const allQuestions = [
     {

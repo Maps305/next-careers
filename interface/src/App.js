@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import axios from 'axios'
 
 
 const skills_array = [];
@@ -54,12 +55,25 @@ function SkillsInput(currentQuestion) {
   );
 
 }
-
-
-
+const handleRecommendations = async () => {
+  // ... other button logic
+  if (skills.length > 0) {
+    const skillsString = skills.join(',');
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/recommendations',
+        { skills: skillsString }
+      );
+      setRecommendations(response.data);
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+      // Handle potential errors gracefully
+    }
+  }
+};
 const App = () => {
   // const interests = new Array();
-
+  const [recommendations, setRecommendations] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   // toggle show recommendations
   const [showRecommendation, setShowRecommendation] = useState(false);
@@ -126,10 +140,16 @@ const App = () => {
               <div className='text-slate-700 text-md font-semibold'>
                 Here are your recommendations:
 
-                -
+                <div>
+                  {recommendations.length > 0 && (
+                    <ul>
+                      {recommendations.map((recommendation, index) => (
+                        <li key={index}>{recommendation}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
-                -
-                <hr></hr>
                 Do you want to take the career quiz again?
               </div>
               <br></br>
@@ -161,10 +181,10 @@ const App = () => {
                     <div className='w-full'>
                       <SkillsInput />
                       {
-                        currentQuestion < allQuestions.length - 1 ? 
-                        <button onClick={() => handleNext()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500 ease-in-out'>next</button> 
-                        : 
-                        <button className='m-2 p-2 rounded-lg bg-green-500 hover:shadow-xl hover:bg-green-300 transition-all duration-500 ease-in-out'>show recommendation</button>
+                        currentQuestion < allQuestions.length - 1 ?
+                          <button onClick={() => handleNext()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500 ease-in-out'>next</button>
+                          :
+                          <button onClick={() => handleRecommendations()} className='m-2 p-2 rounded-lg bg-green-500 hover:shadow-xl hover:bg-green-300 transition-all duration-500 ease-in-out'>show recommendation</button>
                       }
 
                       {/* {console.log(skills_array)} */}

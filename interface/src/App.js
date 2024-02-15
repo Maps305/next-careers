@@ -13,7 +13,10 @@ function SkillsInput(currentQuestion) {
       // Update state only on Enter or blur when inputRef loses focus
       if (event.key === 'Enter' || !inputRef.current.contains(document.activeElement)) {
         setSkills([...skills, newSkill]);
-        skills_array.push([...skills, newSkill])
+        //
+        if (!skills_array.includes(newSkill)) {
+          skills_array.push([...skills, newSkill]);
+        }
         event.target.value = ''; // Clear input field after adding skill
       }
     }
@@ -62,15 +65,16 @@ const App = () => {
   // toggle show recommendations
   const [showRecommendation, setShowRecommendation] = useState(false);
   const handleRecommendations = async () => {
-    // ... other button logic
+    // ... button logic
     if (skills_array.length > 0) {
-      const skillsString = skills_array.join(',');
+      // const skillsString = skills_array.join(',');
       try {
         const response = await axios.post(
           'http://127.0.0.1:5000/recommendations',
-          { skills: skillsString }
+          { skills: skills_array[skills_array.length - 1] }
         );
         setRecommendations(response.data);
+        setShowRecommendation(true);
       } catch (error) {
         console.error('Error fetching recommendations:', error);
         // Handle potential errors gracefully
@@ -127,6 +131,7 @@ const App = () => {
   }
 
   const tryAgain = () => {
+    setShowRecommendation(false);
     setCurrentQuestion(0);
   }
 
@@ -140,20 +145,22 @@ const App = () => {
               <div className='text-slate-700 text-md font-semibold'>
                 Here are your recommendations:
 
-                <div>
+                <div className="mb-2 text-green-900">
                   {recommendations.length > 0 && (
                     <ul>
                       {recommendations.map((recommendation, index) => (
-                        <li key={index}>{recommendation}</li>
+                        <li key={index} className='bg-slate-700 rounded-md m-2 text-white hover:bg-blue-500 hover:shadow-xl transition-all duration-500'>{recommendation}</li>
                       ))}
                     </ul>
                   )}
                 </div>
-
-                Do you want to take the career quiz again?
               </div>
-              <br></br>
-              <button onClick={() => tryAgain()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500'>try again</button>
+              <br />
+              <div>
+                Do you want to take the career quiz again?
+                <button onClick={() => tryAgain()} className='m-2 h-10 w-24 rounded-md bg-slate-200 hover:bg-slate-100 hover:shadow-xl transition-all duration-500'>try again</button>
+              </div>
+
             </>
           ) : (
             <>
